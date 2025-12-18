@@ -28,10 +28,8 @@ def init_db():
     conn.close()
 
 
-@app.before_first_request
-def setup():
-    init_db()
-
+# Initialize DB once at startup (Flask 3 safe, no before_first_request)
+init_db()
 
 TEMPLATE = """
 <!doctype html>
@@ -91,5 +89,4 @@ def index():
 
 
 if __name__ == "__main__":
-    init_db()
     app.run(host="0.0.0.0", port=5000)
