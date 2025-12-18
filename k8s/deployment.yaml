@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes-app
+  labels:
+    app: notes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notes-app
+  template:
+    metadata:
+      labels:
+        app: notes-app
+        # These labels help Prometheus scrape metrics if configured
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+    spec:
+      containers:
+        - name: notes-app
+          image: your-dockerhub-username/cloud-final-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_PATH
+              value: /data/app.db
+          volumeMounts:
+            - name: notes-storage
+              mountPath: /data
+      volumes:
+        - name: notes-storage
+          persistentVolumeClaim:
+            claimName: notes-app-pvc
